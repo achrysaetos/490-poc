@@ -27,3 +27,17 @@ def split_sequences_multivariate(sequences, n_steps):
 		inputs.append(seq_x)
 		outputs.append(seq_y)
 	return array(inputs), array(outputs)
+
+def split_sequences_multiparallel(sequences, n_steps):
+	inputs, outputs = list(), list()
+	for i in range(len(sequences)):
+		# find the end of this pattern
+		end_ix = i + n_steps
+		# check if we are beyond the dataset
+		if end_ix > len(sequences)-1:
+			break
+		# gather input and output parts of the pattern
+		seq_x, seq_y = sequences[i:end_ix, :], sequences[end_ix, :]
+		inputs.append(seq_x)
+		outputs.append(seq_y)
+	return array(inputs), array(outputs)
