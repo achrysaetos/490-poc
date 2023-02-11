@@ -63,6 +63,7 @@ def main():
     for a in arr:
         tot += calc_return(a)
         count += 1
+    print_portfolio(arr)
     print(tot/count)
     
 
