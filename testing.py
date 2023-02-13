@@ -7,7 +7,7 @@ from lstm.univariate import univariate, split_sequence_univariate
 def calc_return(file, start, end): # dates of investing, inclusive
     df = pd.read_csv(file)
     tot = 0
-    for i in range(start+1, end):
+    for i in range(start+1, end+1):
         tot += df.loc[i, "Log Return"]
     X = 2.718281828459**tot
     return X
@@ -36,15 +36,15 @@ def main():
         prediction = univariate(inputs, outputs, raw_seq[i:seq_size+i], n_steps, batch_size, num_epochs, type="vanilla")
         lstm_portfolio *= 1 + (raw_seq[i:seq_size+i][-1] - raw_seq[i:seq_size+i][-2]) / raw_seq[i:seq_size+i][-2]
         if prediction > raw_seq[i:seq_size+i][-1]:
-            invested += 100
             lstm_portfolio += 100
-            default_portfolio = invested * calc_return("s&p500/AAPL.csv", 52, seq_size+i)
-            print(f"Invest 100 on week {seq_size+i}({seq_size+i+2}) => ${round(lstm_portfolio, 2)} vs ${round(default_portfolio, 2)} from ${invested}", end=" ")
+            default_portfolio = invested * calc_return("s&p500/AAPL.csv", 51, seq_size+i-1) + 100
+            invested += 100
+            print(f"Invest 100 on week {seq_size+i-1}({seq_size+i+1}) => ${round(lstm_portfolio, 2)} vs ${round(default_portfolio, 2)} from ${invested}", end=" ")
             if raw_seq[i:seq_size+i+1][-1] > raw_seq[i:seq_size+i][-1]: correct += 1; print(f"(Correct x{correct})")
             else: incorrect += 1; print(f"(Incorrect x{incorrect})")
         else:
-            default_portfolio = invested * calc_return("s&p500/AAPL.csv", 52, seq_size+i)
-            print(f"Skip week {seq_size+i}({seq_size+i+2}) => ${round(lstm_portfolio, 2)} vs ${round(default_portfolio, 2)} from ${invested}", end=" ")
+            default_portfolio = invested * calc_return("s&p500/AAPL.csv", 51, seq_size+i-1)
+            print(f"Skip week {seq_size+i-1}({seq_size+i+1}) => ${round(lstm_portfolio, 2)} vs ${round(default_portfolio, 2)} from ${invested}", end=" ")
             if raw_seq[i:seq_size+i+1][-1] < raw_seq[i:seq_size+i][-1]: correct += 1; print(f"(Correct x{correct})")
             else: incorrect += 1; print(f"(Incorrect x{incorrect})")
         
