@@ -19,7 +19,7 @@ def main():
     # for filename in os.scandir(directory):
     #     if filename.is_file():
     #         files.append(filename.path)
-    file = "test.csv"
+    file = "combined.csv"
 
     # according to dollar cost averaging
     default_portfolio, lstm_portfolio = 0, 0
