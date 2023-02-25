@@ -4,21 +4,12 @@ import os
 from lstm.univariate import univariate, split_sequence_univariate
 
 
-def calc_return(file, start, end): # dates of investing, inclusive
-    df = pd.read_csv(file)
-    tot = 0
-    for i in range(start+1, end+1):
-        tot += df.loc[i, "Log Return"]
-    X = 2.718281828459**tot
-    return X
-
-
 def main():
-    file = "combined.csv" # location of data
+    file = "daily.csv" # location of data
     df = pd.read_csv(file)
 
     # choose a window and a number of time steps
-    seq_size, n_steps = 52, 4
+    seq_size, n_steps = 365, 100
     # choose a batch size and a number of epochs
     batch_size, num_epochs = 50, 200
 
