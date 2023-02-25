@@ -36,7 +36,7 @@ def main():
     for i in range(len(raw_seq)-seq_size):
         inputs, outputs = split_sequence_univariate(raw_seq[i:seq_size+i], n_steps)
         # prediction = raw_seq[i:seq_size+i+1][-1]
-        prediction = univariate(inputs, outputs, raw_seq[i:seq_size+i], n_steps, batch_size, num_epochs, type="bidirectional")
+        prediction = univariate(inputs, outputs, raw_seq[i:seq_size+i], n_steps, batch_size, num_epochs, type="vanilla")
         invested += 100
         r = 1 + (raw_seq[i:seq_size+i][-1] - raw_seq[i:seq_size+i][-2]) / raw_seq[i:seq_size+i][-2]
         default_portfolio = default_portfolio * r + 100
