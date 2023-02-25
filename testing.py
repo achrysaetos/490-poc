@@ -19,7 +19,7 @@ def main():
     # for filename in os.scandir(directory):
     #     if filename.is_file():
     #         files.append(filename.path)
-    file = "s&p500.csv"
+    file = "vix.csv"
 
     # according to dollar cost averaging
     invested, allowance, default_portfolio, lstm_portfolio = 0, 100, 0, 0
@@ -36,7 +36,7 @@ def main():
     for i in range(len(raw_seq)-seq_size):
         inputs, outputs = split_sequence_univariate(raw_seq[i:seq_size+i], n_steps)
         # prediction = raw_seq[i:seq_size+i+1][-1]
-        prediction = univariate(inputs, outputs, raw_seq[i:seq_size+i], n_steps, batch_size, num_epochs, type="vanilla")
+        prediction = univariate(inputs, outputs, raw_seq[i:seq_size+i], n_steps, batch_size, num_epochs, type="bidirectional")
         invested += 100
         r = 1 + (raw_seq[i:seq_size+i][-1] - raw_seq[i:seq_size+i][-2]) / raw_seq[i:seq_size+i][-2]
         default_portfolio = default_portfolio * r + 100
