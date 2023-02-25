@@ -19,10 +19,10 @@ def main():
     # for filename in os.scandir(directory):
     #     if filename.is_file():
     #         files.append(filename.path)
-    file = "vix.csv"
+    file = "test.csv"
 
     # according to dollar cost averaging
-    invested, allowance, default_portfolio, lstm_portfolio = 0, 100, 0, 0
+    default_portfolio, lstm_portfolio = 0, 0
     correct, incorrect = 0, 0
 
     # choose a window and a number of time steps
@@ -31,27 +31,32 @@ def main():
     batch_size, num_epochs = 50, 200
     # define input sequence
     df = pd.read_csv(file)
-    raw_seq = df["Adj Close"].tolist()
+    raw_seq = df["vix"].tolist()
+    log_ret = df["s&p(log)"].tolist()
+    data = log_ret[seq_size:]
+    week = df["Date"].tolist()[seq_size:]
+    default_log_ret, lstm_log_ret = [], []
     # split into samples and run model
     for i in range(len(raw_seq)-seq_size):
         inputs, outputs = split_sequence_univariate(raw_seq[i:seq_size+i], n_steps)
         # prediction = raw_seq[i:seq_size+i+1][-1]
-        prediction = univariate(inputs, outputs, raw_seq[i:seq_size+i], n_steps, batch_size, num_epochs, type="bidirectional")
-        invested += 100
-        r = 1 + (raw_seq[i:seq_size+i][-1] - raw_seq[i:seq_size+i][-2]) / raw_seq[i:seq_size+i][-2]
-        default_portfolio = default_portfolio * r + 100
-        lstm_portfolio *= r
-        if prediction > raw_seq[i:seq_size+i][-1]:
-            lstm_portfolio += allowance
-            print(f"Invest {allowance} on week {seq_size+i-1}({seq_size+i+1}) => ${round(lstm_portfolio, 2)} vs ${round(default_portfolio, 2)} from ${invested}", end=" ")
-            if raw_seq[i:seq_size+i+1][-1] > raw_seq[i:seq_size+i][-1]: correct += 1; print(f"(Correct x{correct})")
-            else: incorrect += 1; print(f"(Incorrect x{incorrect})")
-            allowance = 100
+        prediction = univariate(inputs, outputs, raw_seq[i:seq_size+i], n_steps, batch_size, num_epochs, type="vanilla")
+        default_log_ret.append(data[i])
+        default_portfolio = 2.718281828459**sum(default_log_ret)
+        # print(f"Prev: {raw_seq[i:seq_size+i][-1]}, Prediction: {prediction}, Actual: {raw_seq[i:seq_size+i+1][-1]}")
+        # print(f"Week: {week[i]}, Data: {data[i]}, Focus: {raw_seq[i:seq_size+i+1][-1]}")
+        if prediction < raw_seq[i:seq_size+i][-1]:
+            lstm_log_ret.append(data[i])
+            lstm_portfolio = 2.718281828459**sum(lstm_log_ret)
+            print(f"Buy on {week[i]} => {round(lstm_portfolio, 2)} vs {round(default_portfolio, 2)}", end=" ")
+            if raw_seq[i:seq_size+i+1][-1] < raw_seq[i:seq_size+i][-1]: correct += 1; print(f"(Correct x{correct}, {round(correct*100/(correct+incorrect), 1)}%)")
+            else: incorrect += 1; print(f"(Incorrect x{incorrect}, {round(incorrect*100/(correct+incorrect), 1)}%)")
         else:
-            print(f"Skip week {seq_size+i-1}({seq_size+i+1}) => ${round(lstm_portfolio+allowance, 2)} vs ${round(default_portfolio, 2)} from ${invested}", end=" ")
-            if raw_seq[i:seq_size+i+1][-1] < raw_seq[i:seq_size+i][-1]: correct += 1; print(f"(Correct x{correct})")
-            else: incorrect += 1; print(f"(Incorrect x{incorrect})")
-            allowance += 100
+            lstm_log_ret.append(0)
+            lstm_portfolio = 2.718281828459**sum(lstm_log_ret)
+            print(f"Sell on {week[i]} => {round(lstm_portfolio, 2)} vs {round(default_portfolio, 2)}", end=" ")
+            if raw_seq[i:seq_size+i+1][-1] > raw_seq[i:seq_size+i][-1]: correct += 1; print(f"(Correct x{correct}, {round(correct*100/(correct+incorrect), 1)}%)")
+            else: incorrect += 1; print(f"(Incorrect x{incorrect}, {round(incorrect*100/(correct+incorrect), 1)}%)")
         
 
 if __name__ == "__main__":
