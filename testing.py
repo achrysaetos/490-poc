@@ -14,12 +14,12 @@ def calc_return(file, start, end): # dates of investing, inclusive
 
 
 def main():
-    directory = "s&p500" # folder containing data
-    files = []
-    for filename in os.scandir(directory):
-        if filename.is_file():
-            files.append(filename.path)
-    file = "s&p500/AAPL.csv"
+    # directory = "s&p500"; file = "s&p500/AAPL.csv"
+    # files = []
+    # for filename in os.scandir(directory):
+    #     if filename.is_file():
+    #         files.append(filename.path)
+    file = "s&p500.csv"
 
     # according to dollar cost averaging
     invested, allowance, default_portfolio, lstm_portfolio = 0, 100, 0, 0
