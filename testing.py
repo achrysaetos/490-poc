@@ -5,11 +5,11 @@ from lstm.univariate import univariate, split_sequence_univariate
 
 
 def main():
-    file = "daily.csv" # location of data
+    file = "weekly.csv" # location of data
     df = pd.read_csv(file)
 
     # choose a window and a number of time steps
-    seq_size, n_steps = 365, 100
+    seq_size, n_steps = 52, 4
     # choose a batch size and a number of epochs
     batch_size, num_epochs = 50, 200
 
