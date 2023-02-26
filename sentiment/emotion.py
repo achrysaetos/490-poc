@@ -1,7 +1,5 @@
 from transformers import pipeline
 import pandas as pd
-import time
-import csv
 import requests
 
 
@@ -14,10 +12,9 @@ def run_bert(string):
 def main():
     file = "daily.csv" # location of data
     df = pd.read_csv(file)
-    days = df["Date"].tolist()
+    days = df["Date"].tolist() # one month back only, else api fails
 
     for i in range(len(days)):
-        print("Getting day ", days[i])
         url = ('https://newsapi.org/v2/everything?'
             'q=%22s%26p%20500%22&'
             'searchIn=title&'
@@ -32,8 +29,9 @@ def main():
         for article in articles:
             score = run_bert(article["title"])
             scores.append(score)
-            print(article, score)
-        df['fear'] = sum(scores)/len(scores)
+            print(days[i], article["title"], score)
+        df.loc[i, "fear"] = sum(scores)/len(scores)
+    df.to_csv(file, index=False)
 
 
 if __name__ == "__main__":
