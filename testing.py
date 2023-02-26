@@ -4,7 +4,7 @@ from lstm.univariate import univariate, split_sequence_univariate
 
 
 def main():
-    file = "weekly.csv" # location of data
+    file = "data/weekly.csv" # location of data
     df = pd.read_csv(file)
 
     # choose a window and a number of time steps
@@ -21,7 +21,7 @@ def main():
     correct, incorrect = 0, 0
 
     # split into samples and run model
-    with open('output.csv', 'w', newline='') as file:
+    with open('testing.csv', 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["Week", "Date", "LSTM", "Passive", "Correct"])
         for i in range(len(raw_seq)-seq_size):
