@@ -43,7 +43,7 @@ def main():
                 print(f"Sell on ({seq_size+i+2}) {week[i]} => {round(lstm_portfolio, 2)} vs {round(default_portfolio, 2)}", end=" ")
                 if raw_seq[i:seq_size+i+1][-1] > raw_seq[i:seq_size+i][-1]: correct += 1; print(f"(Correct x{correct}, {round(correct*100/(correct+incorrect), 1)}%)")
                 else: incorrect += 1; print(f"(Incorrect x{incorrect}, {round(incorrect*100/(correct+incorrect), 1)}%)")
-            writer.writerow([seq_size+i+2, week[i], round(lstm_portfolio, 3), round(default_portfolio, 3), round(correct/(correct+incorrect), 3)])
+            writer.writerow([seq_size+i+2, week[i], round(lstm_portfolio, 3), round(default_portfolio, 3), round(correct/(correct+incorrect), 5)])
         
 
 if __name__ == "__main__":
