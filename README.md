@@ -2,7 +2,7 @@
 Examining the feasibility of quant methods in finance (a proof of concept).
 
 ## To run
-*Initialize a python virtual environment and install requirements using pip (keras and transformers).*\
+*Initialize a python virtual environment and install requirements using pip (keras and transformers).*
 * LSTM - run `python testing.py` from the root directory
 * BERT - `cd` into `sentiment/`, then run `python emotion.py`
 
